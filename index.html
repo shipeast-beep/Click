@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Klikací hra</title>
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600&display=swap" rel="stylesheet" />
 <style>
@@ -234,8 +234,8 @@
   const winAnimation = document.getElementById("winAnimation");
   const clickButton = document.getElementById("clickButton");
 
-  // Zvuk kliknutí (placeholder prázdný)
-  const clickSound = new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=");
+  const clickSound = new Audio("https://actions.google.com/sounds/v1/buttons/button_press.mp3");
+  const winSound = new Audio("https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg");
 
   function updateDisplay() {
     totalClicksDisplay.textContent = `Celkové kliky: ${totalClicks}`;
@@ -244,7 +244,6 @@
     let remaining = clicksPerWin - clicks;
     toNextWin.textContent = `Do dalšího winu: ${remaining > 0 ? remaining : 0}`;
     
-    // Malý blink efekt při změně
     [totalClicksDisplay, clicksDisplay, winsDisplay].forEach(el => {
       el.classList.remove("blink");
       void el.offsetWidth;
@@ -253,6 +252,9 @@
   }
 
   function triggerWinAnimation() {
+    winSound.currentTime = 0;
+    winSound.play().catch(() => {});
+
     winAnimation.style.opacity = "1";
     winAnimation.style.animation = "popWin 1s forwards";
     setTimeout(() => {
@@ -268,7 +270,7 @@
       confetti.className = "confetti";
       confetti.style.left = `${Math.random() * 100}%`;
       confetti.style.top = `-10px`;
-      confetti.style.backgroundColor = `hsl(${Math.random() * 120 + 150}, 70%, 45%)`; // modro-zelené barvy
+      confetti.style.backgroundColor = `hsl(${Math.random() * 120 + 150}, 70%, 45%)`;
       confetti.style.animationDelay = `${Math.random() * 1000}ms`;
       document.querySelector(".container").appendChild(confetti);
       setTimeout(() => confetti.remove(), 1500);
@@ -285,7 +287,6 @@
       triggerWinAnimation();
     }
 
-    // Povoleno záporné kliky bez ovlivnění wins
     updateDisplay();
     playClickSound();
   }
@@ -319,13 +320,12 @@
 
   clickButton.addEventListener("click", () => adjustClicks(1));
 
-  // Klávesové zkratky
   window.addEventListener("keydown", (e) => {
     if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT" || e.target.isContentEditable) return;
 
     switch(e.key) {
       case "+":
-      case "=": // plus bez shiftu na CZ klávesnici je '='
+      case "=":
         e.preventDefault();
         adjustClicks(10);
         break;
