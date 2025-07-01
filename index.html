@@ -1,352 +1,356 @@
 <!DOCTYPE html>
 <html lang="cs">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Klikací hra</title>
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600&display=swap" rel="stylesheet" />
-<style>
-  body {
-    margin: 0;
-    font-family: 'Quicksand', sans-serif;
-    background: #e0f7fa; /* světle modrá */
-    color: #004d40; /* tmavě zelená/modrá */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    min-height: 100vh;
-    padding: 20px 15px;
-  }
-  .container {
-    max-width: 420px;
-    width: 100%;
-    text-align: center;
-    border: 2px solid #4db6ac; /* tyrkysová */
-    padding: 30px 25px;
-    border-radius: 20px;
-    background: #b2dfdb; /* světle tyrkysová */
-    box-shadow: 0 0 20px rgba(38,166,154,0.3);
-    position: relative;
-  }
-  h1 {
-    color: #00695c;
-    margin-bottom: 15px;
-  }
-  .stats {
-    font-size: 1.4em;
-    margin: 10px 0;
-    background: #80cbc4;
-    padding: 14px 18px;
-    border-radius: 14px;
-    border: 1px solid #4db6ac;
-    position: relative;
-    overflow: hidden;
-    color: #004d40;
-    user-select: none;
-  }
-  .stats.blink {
-    animation: blinkChange 0.4s ease;
-  }
-  #clickButton {
-    margin-top: 25px;
-    padding: 18px 36px;
-    font-size: 2em;
-    background: #00796b;
-    border: none;
-    border-radius: 18px;
-    color: #b2dfdb;
-    cursor: pointer;
-    box-shadow: 0 6px 15px rgba(0,121,107,0.5);
-    transition: transform 0.1s ease;
-    user-select: none;
-  }
-  #clickButton:active {
-    transform: scale(0.95);
-  }
-  .section-title {
-    font-size: 1.25em;
-    margin-top: 30px;
-    margin-bottom: 12px;
-    color: #004d40;
-    border-bottom: 1px dashed #4db6ac;
-    padding-bottom: 6px;
-    user-select: none;
-  }
-  .controls {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
-    margin-top: 10px;
-  }
-  button.control-btn {
-    padding: 14px;
-    font-size: 1.1em;
-    border: none;
-    border-radius: 14px;
-    background: #80cbc4;
-    color: #004d40;
-    cursor: pointer;
-    transition: background 0.3s, box-shadow 0.3s;
-    border: 1px solid #4db6ac;
-    user-select: none;
-  }
-  button.control-btn:hover,
-  button.control-btn:focus {
-    background: #4db6ac;
-    box-shadow: 0 0 8px #00796b;
-    outline: none;
-  }
-  .manual-input {
-    margin-top: 16px;
-  }
-  .manual-input input,
-  .manual-input select {
-    padding: 10px;
-    font-size: 1.05em;
-    margin: 6px 6px 6px 0;
-    border-radius: 14px;
-    border: 1px solid #4db6ac;
-    background: #b2dfdb;
-    color: #004d40;
-    min-width: 70px;
-    user-select: text;
-  }
-  #winAnimation {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 4em;
-    opacity: 0;
-    pointer-events: none;
-    color: #004d40;
-    user-select: none;
-    z-index: 11;
-  }
-  .confetti {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background-color: #00796b;
-    opacity: 0.8;
-    border-radius: 50%;
-    pointer-events: none;
-    animation: confettiFall 1.5s forwards ease-out;
-  }
-  @keyframes blinkChange {
-    0%,100% { background-color: #80cbc4; }
-    50% { background-color: #4db6ac; }
-  }
-  @keyframes popWin {
-    0% {
-      transform: translate(-50%, -50%) scale(0.6);
-      opacity: 0;
-    }
-    20% {
-      transform: translate(-50%, -50%) scale(1.2);
-      opacity: 1;
-    }
-    100% {
-      transform: translate(-50%, -50%) scale(1);
-      opacity: 0;
-    }
-  }
-  @keyframes confettiFall {
-    0% {
-      transform: translateY(0) rotate(0deg);
-      opacity: 0.8;
-    }
-    100% {
-      transform: translateY(150px) rotate(360deg);
-      opacity: 0;
-    }
-  }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Klikací hra - modrý design</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600&display=swap" rel="stylesheet" />
+    <style>
+      body {
+        margin: 0;
+        font-family: 'Quicksand', sans-serif;
+        background: #e0f7fa;
+        /* světle modrá */
+        color: #004d40;
+        /* tmavě zelená/modrá */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        min-height: 100vh;
+        padding: 20px 15px;
+      }
 
-  /* Responsivita */
-  @media (max-width: 480px) {
-    body {
-      padding: 15px 10px;
-    }
-    .container {
-      padding: 20px 15px;
-    }
-    #clickButton {
-      font-size: 1.6em;
-      padding: 14px 28px;
-    }
-    button.control-btn {
-      font-size: 1em;
-      padding: 12px;
-    }
-    .stats {
-      font-size: 1.2em;
-      padding: 10px 14px;
-    }
-  }
-</style>
-</head>
-<body>
-  <div class="container" role="main" aria-label="Klikací hra">
-    <h1>IG: __stepanek.filip</h1>
-    <div class="stats" id="totalClicksDisplay" aria-live="polite" aria-atomic="true">Celkové kliky: 0</div>
-    <div class="stats" id="clicksDisplay" aria-live="polite" aria-atomic="true">Kliky: 0</div>
-    <div class="stats" id="winsDisplay" aria-live="polite" aria-atomic="true">Wins: 0</div>
-    <div class="stats" id="toNextWin" aria-live="polite" aria-atomic="true">Do dalšího winu: 500</div>
+      .container {
+        max-width: 420px;
+        width: 100%;
+        text-align: center;
+        border: 2px solid #4db6ac;
+        /* tyrkysová */
+        padding: 30px 25px;
+        border-radius: 20px;
+        background: #b2dfdb;
+        /* světle tyrkysová */
+        box-shadow: 0 0 20px rgba(38, 166, 154, 0.3);
+        position: relative;
+      }
 
-    <button id="clickButton" aria-label="Klikni pro přidání jednoho kliku" title="Klikni pro přidání 1 kliku">🫵 KLIK 🫵</button>
+      h1 {
+        color: #00695c;
+        margin-bottom: 15px;
+      }
 
-    <div class="section-title">Rychlé úpravy</div>
-    <div class="controls">
-      <button class="control-btn" onclick="adjustClicks(10)" aria-label="Přidat 10 kliků">+10 Kliků</button>
-      <button class="control-btn" onclick="adjustClicks(-10)" aria-label="Odebrat 10 kliků">-10 Kliků</button>
-      <button class="control-btn" onclick="adjustWins(1)" aria-label="Přidat 1 win">+1 Win</button>
-      <button class="control-btn" onclick="adjustWins(-1)" aria-label="Odebrat 1 win">-1 Win</button>
+      .stats {
+        font-size: 1.4em;
+        margin: 10px 0;
+        background: #80cbc4;
+        padding: 14px 18px;
+        border-radius: 14px;
+        border: 1px solid #4db6ac;
+        position: relative;
+        overflow: hidden;
+        color: #004d40;
+        user-select: none;
+      }
+
+      .stats.blink {
+        animation: blinkChange 0.4s ease;
+      }
+
+      #clickButton {
+        margin-top: 25px;
+        padding: 18px 36px;
+        font-size: 2em;
+        background: #00796b;
+        border: none;
+        border-radius: 18px;
+        color: #b2dfdb;
+        cursor: pointer;
+        box-shadow: 0 6px 15px rgba(0, 121, 107, 0.5);
+        transition: transform 0.1s ease;
+        user-select: none;
+      }
+
+      #clickButton:active {
+        transform: scale(0.95);
+      }
+
+      .section-title {
+        font-size: 1.25em;
+        margin-top: 30px;
+        margin-bottom: 12px;
+        color: #004d40;
+        border-bottom: 1px dashed #4db6ac;
+        padding-bottom: 6px;
+        user-select: none;
+      }
+
+      .controls {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+        margin-top: 10px;
+      }
+
+      button.control-btn {
+        padding: 14px;
+        font-size: 1.1em;
+        border: none;
+        border-radius: 14px;
+        background: #80cbc4;
+        color: #004d40;
+        cursor: pointer;
+        transition: background 0.3s, box-shadow 0.3s;
+        border: 1px solid #4db6ac;
+        user-select: none;
+      }
+
+      button.control-btn:hover,
+      button.control-btn:focus {
+        background: #4db6ac;
+        box-shadow: 0 0 8px #00796b;
+        outline: none;
+      }
+
+      .manual-input {
+        margin-top: 16px;
+      }
+
+      .manual-input input,
+      .manual-input select {
+        padding: 10px;
+        font-size: 1.05em;
+        margin: 6px 6px 6px 0;
+        border-radius: 14px;
+        border: 1px solid #4db6ac;
+        background: #b2dfdb;
+        color: #004d40;
+        min-width: 70px;
+        user-select: text;
+      }
+
+      #winAnimation {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 4em;
+        opacity: 0;
+        pointer-events: none;
+        color: #004d40;
+        user-select: none;
+        z-index: 11;
+      }
+
+      .confetti {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: #00796b;
+        opacity: 0.8;
+        border-radius: 50%;
+        pointer-events: none;
+        animation: confettiFall 1.5s forwards ease-out;
+      }
+
+      @keyframes blinkChange {
+
+        0%,
+        100% {
+          background-color: #80cbc4;
+        }
+
+        50% {
+          background-color: #4db6ac;
+        }
+      }
+
+      @keyframes popWin {
+        0% {
+          transform: translate(-50%, -50%) scale(0.6);
+          opacity: 0;
+        }
+
+        20% {
+          transform: translate(-50%, -50%) scale(1.2);
+          opacity: 1;
+        }
+
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 0;
+        }
+      }
+
+      @keyframes confettiFall {
+        0% {
+          transform: translateY(0) rotate(0deg);
+          opacity: 0.8;
+        }
+
+        100% {
+          transform: translateY(150px) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      /* Responsivita */
+      @media (max-width: 480px) {
+        body {
+          padding: 15px 10px;
+        }
+
+        .container {
+          padding: 20px 15px;
+        }
+
+        #clickButton {
+          font-size: 1.6em;
+          padding: 14px 28px;
+        }
+
+        button.control-btn {
+          font-size: 1em;
+          padding: 12px;
+        }
+
+        .stats {
+          font-size: 1.2em;
+          padding: 10px 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" role="main" aria-label="Klikací hra">
+      <h1>IG: __stepanek.filip</h1>
+      <div class="stats" id="totalClicksDisplay" aria-live="polite" aria-atomic="true">Celkové kliky: 0</div>
+      <div class="stats" id="clicksDisplay" aria-live="polite" aria-atomic="true">Kliky: 0</div>
+      <div class="stats" id="winsDisplay" aria-live="polite" aria-atomic="true">Wins: 0</div>
+      <div class="stats" id="toNextWin" aria-live="polite" aria-atomic="true">Do dalšího winu: 500</div>
+      <button id="clickButton" aria-label="Klikni pro přidání jednoho kliku" title="Klikni pro přidání 1 kliku">🫵 KLIK 🫵</button>
+      <div class="section-title">Rychlé úpravy</div>
+      <div class="controls">
+        <button class="control-btn" onclick="adjustClicks(10)" aria-label="Přidat 10 kliků">+10 Kliků</button>
+        <button class="control-btn" onclick="adjustClicks(-10)" aria-label="Odebrat 10 kliků">-10 Kliků</button>
+        <button class="control-btn" onclick="adjustWins(1)" aria-label="Přidat 1 win">+1 Win</button>
+        <button class="control-btn" onclick="adjustWins(-1)" aria-label="Odebrat 1 win">-1 Win</button>
+      </div>
+      <div class="section-title">Manuální zadání</div>
+      <div class="manual-input">
+        <input type="number" id="manualValue" aria-label="Číslo pro úpravu" placeholder="Číslo" />
+        <select id="manualType" aria-label="Vyber typ úpravy">
+          <option value="clicks">Kliky</option>
+          <option value="wins">Wins</option>
+        </select>
+        <select id="manualAction" aria-label="Vyber akci">
+          <option value="add">Přičíst</option>
+          <option value="subtract">Odečíst</option>
+        </select>
+        <button class="control-btn" onclick="manualAdjust()" aria-label="Potvrdit manuální úpravu">Potvrdit</button>
+      </div>
+      <div id="winAnimation" aria-live="assertive" aria-atomic="true">🎉 WIN!</div>
     </div>
+    <script>
+      let clicks = 0;
+      let wins = 0;
+      let totalClicks = 0;
+      const clicksPerWin = 500;
+      const totalClicksDisplay = document.getElementById("totalClicksDisplay");
+      const clicksDisplay = document.getElementById("clicksDisplay");
+      const winsDisplay = document.getElementById("winsDisplay");
+      const toNextWin = document.getElementById("toNextWin");
+      const winAnimation = document.getElementById("winAnimation");
+      const clickButton = document.getElementById("clickButton");
 
-    <div class="section-title">Manuální zadání</div>
-    <div class="manual-input">
-      <input type="number" id="manualValue" aria-label="Číslo pro úpravu" placeholder="Číslo" />
-      <select id="manualType" aria-label="Vyber typ úpravy">
-        <option value="clicks">Kliky</option>
-        <option value="wins">Wins</option>
-      </select>
-      <select id="manualAction" aria-label="Vyber akci">
-        <option value="add">Přičíst</option>
-        <option value="subtract">Odečíst</option>
-      </select>
-      <button class="control-btn" onclick="manualAdjust()" aria-label="Potvrdit manuální úpravu">Potvrdit</button>
-    </div>
+      // Lokální zvuky
+      const clickSound = new Audio("click.mp3");
+      const winSound = new Audio("win.mp3");
 
-    <div id="winAnimation" aria-live="assertive" aria-atomic="true">🎉 WIN!</div>
-  </div>
+      function updateDisplay() {
+        totalClicksDisplay.textContent = `Celkové kliky: ${totalClicks}`;
+        clicksDisplay.textContent = `Kliky: ${clicks}`;
+        winsDisplay.textContent = `Wins: ${wins}`;
+        let remaining = clicksPerWin - clicks;
+        toNextWin.textContent = `Do dalšího winu: ${remaining > 0 ? remaining : 0}`;
+      }
 
-<script>
-  let clicks = 0;
-  let wins = 0;
-  let totalClicks = 0;
-  const clicksPerWin = 500;
+      function playClickSound() {
+        if (!clickSound) return;
+        clickSound.currentTime = 0;
+        clickSound.play().catch(() => {});
+      }
 
-  const totalClicksDisplay = document.getElementById("totalClicksDisplay");
-  const clicksDisplay = document.getElementById("clicksDisplay");
-  const winsDisplay = document.getElementById("winsDisplay");
-  const toNextWin = document.getElementById("toNextWin");
-  const winAnimation = document.getElementById("winAnimation");
-  const clickButton = document.getElementById("clickButton");
+      function triggerWinAnimation() {
+        winAnimation.style.opacity = "1";
+        winAnimation.style.animation = "popWin 1s forwards";
+        winSound.currentTime = 0;
+        winSound.play().catch(() => {});
+        setTimeout(() => {
+          winAnimation.style.opacity = "0";
+          winAnimation.style.animation = "";
+        }, 1000);
+        createConfetti(25);
+      }
 
-  const clickSound = new Audio("https://actions.google.com/sounds/v1/buttons/button_press.mp3");
-  const winSound = new Audio("https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg");
+      function createConfetti(amount) {
+        for (let i = 0; i < amount; i++) {
+          const confetti = document.createElement("div");
+          confetti.classList.add("confetti");
+          confetti.style.left = Math.random() * 100 + "%";
+          confetti.style.backgroundColor = `hsl(${Math.random() * 120 + 160}, 80%, 50%)`;
+          confetti.style.animationDuration = 1 + Math.random() * 0.5 + "s";
+          confetti.style.animationDelay = Math.random() * 0.5 + "s";
+          document.body.appendChild(confetti);
+          setTimeout(() => confetti.remove(), 1500);
+        }
+      }
 
-  function updateDisplay() {
-    totalClicksDisplay.textContent = `Celkové kliky: ${totalClicks}`;
-    clicksDisplay.textContent = `Kliky: ${clicks}`;
-    winsDisplay.textContent = `Wins: ${wins}`;
-    let remaining = clicksPerWin - clicks;
-    toNextWin.textContent = `Do dalšího winu: ${remaining > 0 ? remaining : 0}`;
-    
-    [totalClicksDisplay, clicksDisplay, winsDisplay].forEach(el => {
-      el.classList.remove("blink");
-      void el.offsetWidth;
-      el.classList.add("blink");
-    });
-  }
+      function addClick() {
+        clicks++;
+        totalClicks++;
+        playClickSound();
+        if (clicks >= clicksPerWin) {
+          clicks = 0;
+          wins++;
+          triggerWinAnimation();
+        }
+        updateDisplay();
+      }
 
-  function triggerWinAnimation() {
-    winSound.currentTime = 0;
-    winSound.play().catch(() => {});
+      function adjustClicks(amount) {
+        clicks += amount;
+        if (clicks < 0) clicks = 0;
+        if (clicks >= clicksPerWin) {
+          wins += Math.floor(clicks / clicksPerWin);
+          clicks %= clicksPerWin;
+          triggerWinAnimation();
+        }
+        updateDisplay();
+      }
 
-    winAnimation.style.opacity = "1";
-    winAnimation.style.animation = "popWin 1s forwards";
-    setTimeout(() => {
-      winAnimation.style.opacity = "0";
-      winAnimation.style.animation = "";
-    }, 1000);
-    createConfetti(25);
-  }
+      function adjustWins(amount) {
+        wins += amount;
+        if (wins < 0) wins = 0;
+        updateDisplay();
+      }
 
-  function createConfetti(count) {
-    for (let i = 0; i < count; i++) {
-      const confetti = document.createElement("div");
-      confetti.className = "confetti";
-      confetti.style.left = `${Math.random() * 100}%`;
-      confetti.style.top = `-10px`;
-      confetti.style.backgroundColor = `hsl(${Math.random() * 120 + 150}, 70%, 45%)`;
-      confetti.style.animationDelay = `${Math.random() * 1000}ms`;
-      document.querySelector(".container").appendChild(confetti);
-      setTimeout(() => confetti.remove(), 1500);
-    }
-  }
+      function manualAdjust() {
+        const val = Number(document.getElementById("manualValue").value);
+        const type = document.getElementById("manualType").value;
+        const action = document.getElementById("manualAction").value;
+        if (isNaN(val) || val <= 0) return;
+        if (type === "clicks") {
+          if (action === "add") adjustClicks(val);
+          else adjustClicks(-val);
+        } else {
+          if (action === "add") adjustWins(val);
+          else adjustWins(-val);
+        }
+      }
 
-  function adjustClicks(amount) {
-    totalClicks += amount;
-    clicks += amount;
-
-    while (clicks >= clicksPerWin) {
-      clicks -= clicksPerWin;
-      wins += 1;
-      triggerWinAnimation();
-    }
-
-    updateDisplay();
-    playClickSound();
-  }
-
-  function adjustWins(amount) {
-    wins += amount;
-    if (wins < 0) wins = 0;
-    updateDisplay();
-  }
-
-  function manualAdjust() {
-    const val = Number(document.getElementById("manualValue").value);
-    if (isNaN(val)) return alert("Zadej platné číslo!");
-    const type = document.getElementById("manualType").value;
-    const action = document.getElementById("manualAction").value;
-
-    const amount = action === "add" ? val : -val;
-
-    if(type === "clicks") {
-      adjustClicks(amount);
-    } else if(type === "wins") {
-      adjustWins(amount);
-    }
-  }
-
-  function playClickSound() {
-    if (!clickSound) return;
-    clickSound.currentTime = 0;
-    clickSound.play().catch(() => {});
-  }
-
-  clickButton.addEventListener("click", () => adjustClicks(1));
-
-  window.addEventListener("keydown", (e) => {
-    if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT" || e.target.isContentEditable) return;
-
-    switch(e.key) {
-      case "+":
-      case "=":
-        e.preventDefault();
-        adjustClicks(10);
-        break;
-      case "-":
-        e.preventDefault();
-        adjustClicks(-10);
-        break;
-      case "w":
-      case "W":
-        e.preventDefault();
-        adjustWins(1);
-        break;
-      case "s":
-      case "S":
-        e.preventDefault();
-        adjustWins(-1);
-        break;
-    }
-  });
-
-  updateDisplay();
-</script>
-</body>
+      clickButton.addEventListener("click", addClick);
+      updateDisplay();
+    </script>
+  </body>
 </html>
